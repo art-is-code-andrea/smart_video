@@ -1,34 +1,26 @@
 {
   "name": "@art_is_code/smart_video",
   "version": "1.0.0",
-  "description": "Smart GDPR-compliant video embedder. Blocks iframes until consent is given.",
-  "main": "dist/smart_video.min.js",
-  "module": "src/smart_video.js",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "description": "Smart, GDPR-compliant video embedder for YouTube, Vimeo, TikTok, Instagram and Dailymotion.",
+  "main": "src/smart_video.js",
+  "type": "module",
   "scripts": {
-    "build:js": "terser src/smart_video.js -o dist/smart_video.min.js --compress --mangle",
-    "build:css": "sass src/sass/smart_video.scss dist/smart_video.min.css --style compressed --no-source-map",
-    "build": "npm run build:js && npm run build:css",
-    "prepare": "npm run build"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/art-is-code-andrea/smart_video.git"
   },
   "keywords": [
-    "gdpr",
     "video",
+    "gdpr",
+    "privacy",
     "youtube",
     "vimeo",
-    "compliance",
-    "privacy",
-    "smart-embed"
+    "lazyload"
   ],
   "author": "Andrea D'Agostino (art is code)",
   "license": "MIT",
-  "devDependencies": {
-    "terser": "^5.31.0",
-    "sass": "^1.77.0"
-  },
   "publishConfig": {
     "access": "public"
   }
