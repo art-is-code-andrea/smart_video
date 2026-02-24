@@ -1,5 +1,5 @@
 # @art_is_code/smart_video
-
+[![npm version](https://img.shields.io/npm/v/@art_is_code/smart_video.svg)](https://www.npmjs.com/package/@art_is_code/smart_video)
 Smart, GDPR-compliant video embedder. It blocks 3rd-party iframes (YouTube, TikTok, Instagram, etc.) until consent is given and provides lazy loading.
 
 
