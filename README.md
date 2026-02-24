@@ -12,6 +12,25 @@ Smart, GDPR-compliant video embedder. It blocks 3rd-party iframes (YouTube, TikT
 - **Future-Proof**: Easily update regex patterns if platforms change their URL structure.
 
 ---
+## 📦 Installation
+Via npm
+```bash
+npm install @art_is_code/smart_video
+```
+Then import it in your JavaScript module:
+```javascript
+import { SmartVideo } from '@art_is_code/smart_video';
+```
+Via CDN (Direct Browser Usage)
+```html
+<script type="module">
+    import { SmartVideo } from 'https://unpkg.com/@art_is_code/smart_video/dist/smart_video.min.js';
+    
+    const myVideo = new SmartVideo();
+</script>
+```
+## 🧱 HTML Structure
+Simply place a div with the data-aic-video attribute. The library will handle the rest based on the URL provided.
 
 ## 🎨 CSS & Layout (Container-First)
 
