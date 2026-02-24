@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDPR Demo | @art_is_code/smart_video</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@art_is_code/privacy_js/dist/privacy_js.min.css">
+    
+    <style>
+        /* --- GENERAL LAYOUT --- */
+        body { 
+            font-family: 'Courier New', Courier, monospace; 
+            padding: 50px 20px; 
+            text-align: center; 
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .content { 
+            background: white; 
+            padding: 40px; 
+            border: 1px solid #ddd; 
+            display: inline-block; 
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+
+        h1, h2 { text-align: center; }
+        h2 { margin-top: 40px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        .btn-settings { text-align: center; margin-bottom: 40px; display: block; }
+        .btn-settings a { color: #000; text-decoration: underline; cursor: pointer; }
+
+        /* --- SMART VIDEO CORE CSS --- */
+        [data-aic-video] {
+            position: relative;
+            width: 100%;
+            background-color: #000;
+            margin: 20px auto;
+            overflow: hidden;
+            display: block;
+            aspect-ratio: 16 / 9; /* Default landscape ratio */
+        }
+
+        /* Ratio for TikTok/Instagram (9:16) */
+        [data-aic-video].vertical {
+            aspect-ratio: 9 / 16;
+            max-width: 350px; 
+        }
+
+        [data-aic-video] iframe, 
+        [data-aic-video] video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* --- PLACEHOLDER & UI ELEMENTS --- */
+        .aic-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #222;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .aic-placeholder p {
+            margin: 0;
+            font-size: clamp(0.75rem, 2.5vw, 1rem); 
+            line-height: 1.4;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+
+        .aic-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #e62117;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .aic-btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Smart Video</h1>
+        <div class="btn-settings">
+            <a href="#" class="my-trigger-preferences">Edit your cookie preferences</a>
+        </div>
+
+        <h2>YouTube (Playlist & Video)</h2>
+        <div data-aic-video="https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ" data-autoplay="1"></div>
+        <div data-aic-video="https://www.youtube.com/watch?v=r8jQ9hVA2qs"></div>
+
+        <h2>Instagram (Post & Reel)</h2>
+        <div data-aic-video="https://www.instagram.com/p/DVG6nv5EiXB/" class="vertical"></div>
+        <div data-aic-video="https://www.instagram.com/reel/DTN-UkcDE8_/" class="vertical"></div>
+
+        <h2>TikTok (Vertical)</h2>
+        <div data-aic-video="https://www.tiktok.com/@emmaava0/video/7541574436743351583" class="vertical"></div>
+
+        <h2>HTML5 Video Player</h2>
+        <p style="text-align:center; font-size: 0.8rem;">(No cookies required - Always active)</p>
+        <div data-aic-video="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></div>
+
+        <h2>Dailymotion (Playlist)</h2>
+        <div data-aic-video="https://www.dailymotion.com/playlist/x7fp2z"></div>
+    </div>
+
+    <script type="module">
+        import { Privacy } from 'https://cdn.jsdelivr.net/npm/@art_is_code/privacy_js/dist/privacy_js.min.js';
+        import { SmartVideo } from './src/smart_video.js'; 
+
+        // 1. PrivacyJS Initialization
+        const myPrivacy = new Privacy({
+            name: 'Smart video',
+            triggerClass: 'my-trigger-preferences',
+            vendors: [
+                { id: 'youtube', name: 'YouTube', description: 'Display videos embedded from YouTube.' },
+                { id: 'vimeo', name: 'Vimeo', description: 'Display videos embedded from Vimeo.' },
+                { id: 'tiktok', name: 'TikTok', description: 'Display videos embedded from TikTok.' },
+                { id: 'instagram', name: 'Instagram', description: 'Display videos embedded from Instagram.' },
+                { id: 'dailymotion', name: 'Dailymotion', description: 'Display videos embedded from Dailymotion.' },
+            ]
+        });
+
+        // 2. Consent Mapping Logic
+        const getConsents = () => ({
+            youtube: myPrivacy.hasConsent('youtube'),
+            vimeo: myPrivacy.hasConsent('vimeo'),
+            tiktok: myPrivacy.hasConsent('tiktok'),
+            instagram: myPrivacy.hasConsent('instagram'),
+            dailymotion: myPrivacy.hasConsent('dailymotion')
+        });
+
+        // 3. SmartVideo Initialization
+        const myVideo = new SmartVideo({
+            lang: 'en',
+            consent: getConsents(),
+            translations: {
+                en: { msg: "Accept {vendor} cookies to watch the video", btn: "Accept" }
+            },
+        });
+
+        // 4. Sync Events
+        // Update SmartVideo when PrivacyJS settings change
+        window.addEventListener('artIsPrivacyUpdated', () => {
+            window.dispatchEvent(new CustomEvent('aicVideoUpdate', { 
+                detail: getConsents() 
+            }));
+        });
+
+        // Show Privacy settings when "Accept" button inside the placeholder is clicked
+        window.addEventListener('aicRequestConsent', (e) => {
+            myPrivacy.showSettings(); 
+        });
+    </script>
+</body>
+</html>

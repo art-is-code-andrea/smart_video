@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logic Lab Full | SmartVideo</title>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: #f0f2f5; overflow: hidden; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 380px; background: #1e1e1e; color: white; padding: 25px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.3); z-index: 100; }
+        .sidebar h2 { color: #4ec9b0; font-size: 1.2rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        .switch-group { margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 10px; border-radius: 4px; }
+        .switch-group span { font-size: 0.9rem; font-weight: 500; }
+        
+        /* TERMINAL */
+        .code-title { margin-top: auto; color: #9cdcfe; font-size: 0.8rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        #code-terminal { 
+            width: 100%; height: 220px; background: #000; color: #b5cea8; 
+            font-family: 'Fira Code', 'Consolas', monospace; padding: 12px; border: 1px solid #444;
+            border-radius: 4px; font-size: 0.8rem; resize: none; box-sizing: border-box;
+        }
+
+        /* MAIN CONTENT */
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; }
+        .video-grid { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 50px; }
+        
+        .video-item h3 { margin: 0 0 15px 0; color: #444; font-size: 1.1rem; border-left: 4px solid #e62117; padding-left: 10px; }
+        
+        [data-aic-video] { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        [data-aic-video].vertical { aspect-ratio: 9/16; max-width: 320px; margin: 0 auto; }
+        
+        /* Custom Placeholder Style for this Demo */
+        .aic-placeholder { background: #1a1a1a; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        
+        iframe, video { width: 100%; height: 100%; border: none; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Logic Controller</h2>
+        
+        <div class="switch-group">
+            <span>YouTube</span>
+            <input type="checkbox" id="sw-youtube" class="logic-switch">
+        </div>
+        <div class="switch-group">
+            <span>Instagram</span>
+            <input type="checkbox" id="sw-instagram" class="logic-switch">
+        </div>
+        <div class="switch-group">
+            <span>TikTok</span>
+            <input type="checkbox" id="sw-tiktok" class="logic-switch">
+        </div>
+        <div class="switch-group">
+            <span>Dailymotion</span>
+            <input type="checkbox" id="sw-dailymotion" class="logic-switch">
+        </div>
+
+        <div class="code-title">// aicVideoUpdate Payload</div>
+        <textarea id="code-terminal" readonly></textarea>
+    </div>
+
+    <div class="main-content">
+        <div class="video-grid">
+            
+            <div class="video-item">
+                <h3>YouTube Playlist (Autoplay)</h3>
+                <div data-aic-video="https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ" data-autoplay="1"></div>
+            </div>
+
+            <div class="video-item">
+                <h3>Instagram Reel</h3>
+                <div data-aic-video="https://www.instagram.com/reel/DTN-UkcDE8_/" class="vertical"></div>
+            </div>
+
+            <div class="video-item">
+                <h3>TikTok Video</h3>
+                <div data-aic-video="https://www.tiktok.com/@emmaava0/video/7541574436743351583" class="vertical"></div>
+            </div>
+
+            <div class="video-item">
+                <h3>HTML5 Native (Always On)</h3>
+                <div data-aic-video="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></div>
+            </div>
+
+            <div class="video-item">
+                <h3>Dailymotion Playlist</h3>
+                <div data-aic-video="https://www.dailymotion.com/playlist/x7fp2z"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { SmartVideo } from './src/smart_video.js';
+
+        // Initialization: HTML5 (local) is true by default
+        const myVideo = new SmartVideo({
+            consent: { 
+                youtube: false, 
+                instagram: false, 
+                tiktok: false, 
+                dailymotion: false 
+            },
+            lang: 'en',
+            translations: {
+                en: { msg: "Accept {vendor} cookies to watch the video", btn: "Accept" }
+            },
+        });
+
+        const terminal = document.getElementById('code-terminal');
+        const switches = document.querySelectorAll('.logic-switch');
+
+        const syncLogic = () => {
+            const config = {
+                youtube: document.getElementById('sw-youtube').checked,
+                instagram: document.getElementById('sw-instagram').checked,
+                tiktok: document.getElementById('sw-tiktok').checked,
+                dailymotion: document.getElementById('sw-dailymotion').checked
+            };
+
+            // Display payload in terminal
+            terminal.value = `// Sending new consent arguments:\nwindow.dispatchEvent(\n  new CustomEvent('aicVideoUpdate', {\n    detail: ${JSON.stringify(config, null, 2)}\n  })\n);`;
+
+            // Update SmartVideo instance
+            window.dispatchEvent(new CustomEvent('aicVideoUpdate', { 
+                detail: config 
+            }));
+        };
+
+        switches.forEach(sw => sw.addEventListener('change', syncLogic));
+        
+        // Initial setup
+        syncLogic();
+    </script>
+</body>
+</html>
