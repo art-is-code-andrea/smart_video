@@ -77,8 +77,8 @@ const myVideo = new SmartVideo({
 });
 ```
 ##  👁️ Live Demo
-Full Privacy Integration (with @art_is_code/privacy_js): [demo_with_privacy_js.html](./demo_with_privacy_js.html)
-Standalone : [demo_no_privacy_js.html](./demo_no_privacy_js.html)
+* **[GDPR Mode](https://art-is-code-andrea.github.io/smart_video/demo_with_privacy_js.html)**
+* **[Standalone](https://art-is-code-andrea.github.io/smart_video/demo_no_privacy_js.html)**
 
 ## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
