@@ -134,6 +134,21 @@
         
         // Initial setup
         syncLogic();
+
+        // Detect consent requests from SmartVideo and log them (for demo purposes)
+        window.addEventListener('aicRequestConsent', (e) => {
+            const vendor = e.detail.vendor;
+
+           
+            const consentUpdate = {};
+            consentUpdate[vendor] = true;
+
+            window.dispatchEvent(new CustomEvent('aicVideoUpdate', { 
+                detail: consentUpdate 
+            }));
+            
+            console.log(`SmartVideo: Accepted consent for ${vendor}`);
+        });
     </script>
 </body>
 </html>

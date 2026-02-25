@@ -154,6 +154,7 @@ export class SmartVideo {
     renderPlaceholder(el, vendor) {
         if (el.querySelector('.aic-placeholder')) return;
         el.setAttribute('data-aic-loaded', 'false');
+        
         const t = this.settings.translations[this.settings.lang] || this.settings.translations['en'];
         
         el.innerHTML = `
@@ -162,8 +163,18 @@ export class SmartVideo {
                 <button class="aic-btn" style="padding:10px 20px;background:#e62117;color:#fff;border:none;cursor:pointer;font-weight:bold;">${t.btn}</button>
             </div>`;
 
-        el.querySelector('button').onclick = () => {
-            window.dispatchEvent(new CustomEvent('aicRequestConsent', { detail: vendor }));
+        // Gestione Click
+        el.querySelector('button').onclick = (e) => {
+            e.preventDefault(); 
+            
+            // Notifichiamo all'esterno che serve il consenso
+            window.dispatchEvent(new CustomEvent('aicRequestConsent', { 
+                detail: { 
+                    vendor: vendor,
+                    element: el 
+                },
+                bubbles: true 
+            }));
         };
     }
 }

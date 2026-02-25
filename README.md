@@ -31,6 +31,9 @@ Via CDN (Direct Browser Usage)
 ```
 ## 🧱 HTML Structure
 Simply place a div with the data-aic-video attribute. The library will handle the rest based on the URL provided.
+```html
+<div data-aic-video="[https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=dQw4w9WgXcQ)"></div>
+```
 
 ## 🎨 CSS & Layout (Container-First)
 
@@ -75,10 +78,16 @@ window.addEventListener('artIsPrivacyUpdated', () => {
 ```
 #### Standalone
 ``` javascript
+// Use this if you don't have a global privacy manager. 
+// It captures the click on the "Accept" button and unlocks the video instantly.
 window.addEventListener('aicRequestConsent', (e) => {
+    const { vendor } = e.detail;
     const consentUpdate = {};
-    consentUpdate[e.detail] = true;
-    window.dispatchEvent(new CustomEvent('aicVideoUpdate', { detail: consentUpdate }));
+    consentUpdate[vendor] = true;
+
+    window.dispatchEvent(new CustomEvent('aicVideoUpdate', { 
+        detail: consentUpdate 
+    }));
 });
 ```
 ## 🔌 Custom Providers
@@ -96,6 +105,13 @@ const myVideo = new SmartVideo({
     }
 });
 ```
+## 📡 Events
+SmartVideo communicates via standard DOM Events. You can trigger or listen to them from anywhere in your app.
+
+| Event | Direction | Description |
+| :--- | :--- | :--- |
+| `aicRequestConsent` | **OUT** | Fired when a user clicks the "Accept" button. Payload: `{ detail: { vendor, element } }`. |
+| `aicVideoUpdate` | **IN** | Send this to update consent states and refresh videos. Payload: `{ detail: { youtube: true, ... } }`. |
 ##  👁️ Live Demo
 * **[GDPR Mode](https://art-is-code-andrea.github.io/smart_video/demo_with_privacy_js.html)**
 * **[Standalone](https://art-is-code-andrea.github.io/smart_video/demo_no_privacy_js.html)**
