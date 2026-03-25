@@ -92,7 +92,7 @@ export class SmartVideo {
     setupObserver() {
         const observer = new MutationObserver(() => this.scan());
         observer.observe(document.body, { childList: true, subtree: true });
-    }
+    } 
 
     /**
      * Find all video containers in the page
@@ -106,13 +106,23 @@ export class SmartVideo {
      */
     process(el) {
         const url = el.getAttribute('data-aic-video');
-        if (!url) return;
+        
+        if (!url || url.trim() === '') {
+            el.innerHTML = '';
+            el.setAttribute('data-aic-loaded', 'false');
+            el.removeAttribute('data-last-url');
+            return;
+        }
+
+        if (el.getAttribute('data-last-url') === url) return;
 
         const info = this.detect(url);
-        const isAllowed = info.platform === 'local' || this.settings.consent[info.platform];
+        const isAllowed = info.platform === 'local' || info.platform === 'invalid' || this.settings.consent[info.platform];
 
         if (isAllowed) {
+            el.setAttribute('data-aic-loaded', 'false'); 
             this.renderMedia(el, info);
+            el.setAttribute('data-last-url', url);
         } else {
             this.renderPlaceholder(el, info.platform);
         }
