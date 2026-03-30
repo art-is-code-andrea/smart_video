@@ -1,4 +1,12 @@
 # Changelog
+## [1.3.0] - 2026-03-30
+### Added
+- **YouTube Shorts Support**: The library now correctly parses and embeds YouTube Shorts URLs (`youtube.com/shorts/...`).
+- **Manual Scan Method**: Added `.scan()` method to manually trigger the detection of new video containers in the DOM. Useful for non-reactive SPAs or specific Alpine.js edge cases.
+
+### Fixed
+- Improved regex for YouTube provider to handle multiple URL formats.
+
 ## [1.2.0] - 2026-03-24
 ### Added
 - **Attribute Reactivity**: The library now monitors changes to the `data-aic-video` attribute via `MutationObserver`. This allows seamless integration with reactive frameworks like Alpine.js.

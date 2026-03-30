@@ -17,7 +17,8 @@ export class SmartVideo {
             },
             translations: {
                 en: { msg: "Accept {vendor} cookies to watch the video", btn: "Accept" },
-                it: { msg: "Accetta i cookie di {vendor} per guardare il video", btn: "Accetta" }
+                it: { msg: "Accetta i cookie di {vendor} per guardare il video", btn: "Accetta" },
+                fr: { msg: "Accepter les cookies de {vendor} pour regarder la vidéo", btn: "Accepter" }
             },
             providers: {
                 youtube: {
@@ -25,10 +26,21 @@ export class SmartVideo {
                     getEmbed: (url, auto) => {
                         const isAuto = auto == 1 ? 1 : 0;
                         const mute = isAuto ? '&mute=1' : '';
-                        const urlObj = new URL(url);
-                        const listId = urlObj.searchParams.get('list');
-                        if (listId) return `https://www.youtube-nocookie.com/embed/videoseries?list=${listId}&autoplay=${isAuto}${mute}`;
-                        const videoId = url.includes('youtu.be/') ? urlObj.pathname.substring(1) : urlObj.searchParams.get('v');
+                        const cleanUrl = url.trim();
+
+                        if (cleanUrl.includes('list=')) {
+                            const listMatch = cleanUrl.match(/[?&]list=([^#\&\?]+)/);
+                            if (listMatch) {
+                                return `https://www.youtube-nocookie.com/embed/videoseries?list=${listMatch[1]}&autoplay=${isAuto}${mute}`;
+                            }
+                        }
+
+                        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+                        const match = cleanUrl.match(regex);
+                        const videoId = match ? match[1] : null;
+
+                        if (!videoId) return '';
+
                         return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=${isAuto}${mute}&rel=0&enablejsapi=1`;
                     }
                 },
