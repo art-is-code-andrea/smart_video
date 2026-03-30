@@ -112,6 +112,15 @@ SmartVideo communicates via standard DOM Events. You can trigger or listen to th
 | :--- | :--- | :--- |
 | `aicRequestConsent` | **OUT** | Fired when a user clicks the "Accept" button. Payload: `{ detail: { vendor, element } }`. |
 | `aicVideoUpdate` | **IN** | Send this to update consent states and refresh videos. Payload: `{ detail: { youtube: true, ... } }`. |
+## 🔄 Dynamic Content & Alpine.js
+SmartVideo automatically watches for changes via `MutationObserver`. However, if you are dynamically injecting HTML or using frameworks like Alpine.js in complex scenarios, you might need to manually trigger a scan:
+
+```javascript
+const myVideo = new SmartVideo();
+
+// Manually scan the DOM for new [data-aic-video] elements
+myVideo.scan();
+```
 ##  👁️ Live Demo
 * **[GDPR Mode](https://art-is-code-andrea.github.io/smart_video/demo_with_privacy_js.html)**
 * **[Standalone](https://art-is-code-andrea.github.io/smart_video/demo_no_privacy_js.html)**
